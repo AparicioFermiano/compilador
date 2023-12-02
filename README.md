@@ -36,8 +36,6 @@ Esse é um exemplo do tipo de entrada que será processada e verificada pelos an
 
 ### Como executar
 
-### Como Executar
-
 Para executar o compilador, siga estas etapas:
 
 1. Adicione a expressão desejada no arquivo `entrada.txt`.
