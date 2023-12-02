@@ -33,3 +33,19 @@ Para exemplificar, o sistema verifica se um parêntese aberto foi fechado corret
 ```
 
 Esse é um exemplo do tipo de entrada que será processada e verificada pelos analisadores no sistema de compilação.
+
+### Como executar
+
+### Como Executar
+
+Para executar o compilador, siga estas etapas:
+
+1. Adicione a expressão desejada no arquivo `entrada.txt`.
+2. Acesse a pasta do projeto.
+3. No terminal, execute o seguinte comando:
+
+```bash
+python3 compilador.py < entrada.txt > saida.txt
+```
+
+Este comando redireciona a entrada do programa para o arquivo entrada.txt e a saída é escrita no arquivo saida.txt. Certifique-se de ter o Python instalado em seu sistema para executar o comando com sucesso.
