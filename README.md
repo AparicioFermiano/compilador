@@ -28,6 +28,8 @@ Após a análise léxica, as expressões são submetidas aos analisadores semân
 
 Para exemplificar, o sistema verifica se um parêntese aberto foi fechado corretamente e se não existem operadores consecutivos:
 
+```text
 (2 * 3) + (4 * 5); 6 - (7 - 8); 9 * (10 / 5); (11 / 3) * 4;
+```
 
 Esse é um exemplo do tipo de entrada que será processada e verificada pelos analisadores no sistema de compilação.
