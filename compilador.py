@@ -145,8 +145,7 @@ while True:
 try:
     expressoes = linha.split(';')
     expressoes_tratadas = list(filter(bool, expressoes))
-    # raise Exception(expressoes_tratadas)
-    for indice, exp in enumerate(expressoes_tratadas):
+    for exp in expressoes_tratadas:
         indice_exp += 1
         analisador_semantico(exp)
         exp_tokens = analisador_lexico(exp)
