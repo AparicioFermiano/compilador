@@ -40,48 +40,32 @@ def analisador_sintatico(tokens):
         elif token in precedencia:
             while pilha_op and precedencia.get(
                     pilha_op[-1], 0) >= precedencia[token]:
-                op = pilha_op.pop()
-                num2 = pilha_num.pop()
-                num1 = pilha_num.pop()
-                if op == '+':
-                    pilha_num.append(num1 + num2)
-                elif op == '-':
-                    pilha_num.append(num1 - num2)
-                elif op == '*':
-                    pilha_num.append(num1 * num2)
-                elif op == '/':
-                    pilha_num.append(num1 / num2)
+                aplicar_operador(pilha_op.pop(), pilha_num)
             pilha_op.append(token)
         elif token == '(':
             pilha_op.append(token)
         elif token == ')':
             while pilha_op[-1] != '(':
-                op = pilha_op.pop()
-                num2 = pilha_num.pop()
-                num1 = pilha_num.pop()
-                if op == '+':
-                    pilha_num.append(num1 + num2)
-                elif op == '-':
-                    pilha_num.append(num1 - num2)
-                elif op == '*':
-                    pilha_num.append(num1 * num2)
-                elif op == '/':
-                    pilha_num.append(num1 / num2)
+                aplicar_operador(pilha_op.pop(), pilha_num)
             pilha_op.pop()
 
     while pilha_op:
-        op = pilha_op.pop()
-        num2 = pilha_num.pop()
-        num1 = pilha_num.pop()
-        if op == '+':
-            pilha_num.append(num1 + num2)
-        elif op == '-':
-            pilha_num.append(num1 - num2)
-        elif op == '*':
-            pilha_num.append(num1 * num2)
-        elif op == '/':
-            pilha_num.append(num1 / num2)
+        aplicar_operador(pilha_op.pop(), pilha_num)
     return pilha_num[0]
+
+
+def aplicar_operador(op, pilha_num):
+    """Desempilha dois números, aplica op e empilha o resultado."""
+    num2 = pilha_num.pop()
+    num1 = pilha_num.pop()
+    if op == '+':
+        pilha_num.append(num1 + num2)
+    elif op == '-':
+        pilha_num.append(num1 - num2)
+    elif op == '*':
+        pilha_num.append(num1 * num2)
+    elif op == '/':
+        pilha_num.append(num1 / num2)
 
 
 def digito(token):
