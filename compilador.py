@@ -5,7 +5,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 
 def analisador_lexico(expressao):
-    """Faz análise dos caracteres."""
+    """Quebra a expressão em tokens: números, operadores e parênteses."""
     tokens = []
     i = 0
     while i < len(expressao):
@@ -29,7 +29,7 @@ def analisador_lexico(expressao):
 
 
 def analisador_sintatico(tokens):
-    """Faz uma analise sobre a sintaxe da expressao."""
+    """Avalia os tokens com duas pilhas e devolve o resultado da expressão."""
     pilha_num = []
     pilha_op = []
     precedencia = {'+': 1, '-': 1, '*': 2, '/': 2}
@@ -40,51 +40,36 @@ def analisador_sintatico(tokens):
         elif token in precedencia:
             while pilha_op and precedencia.get(
                     pilha_op[-1], 0) >= precedencia[token]:
-                op = pilha_op.pop()
-                num2 = pilha_num.pop()
-                num1 = pilha_num.pop()
-                if op == '+':
-                    pilha_num.append(num1 + num2)
-                elif op == '-':
-                    pilha_num.append(num1 - num2)
-                elif op == '*':
-                    pilha_num.append(num1 * num2)
-                elif op == '/':
-                    pilha_num.append(num1 / num2)
+                aplicar_operador(pilha_op.pop(), pilha_num)
             pilha_op.append(token)
         elif token == '(':
             pilha_op.append(token)
         elif token == ')':
             while pilha_op[-1] != '(':
-                op = pilha_op.pop()
-                num2 = pilha_num.pop()
-                num1 = pilha_num.pop()
-                if op == '+':
-                    pilha_num.append(num1 + num2)
-                elif op == '-':
-                    pilha_num.append(num1 - num2)
-                elif op == '*':
-                    pilha_num.append(num1 * num2)
-                elif op == '/':
-                    pilha_num.append(num1 / num2)
+                aplicar_operador(pilha_op.pop(), pilha_num)
             pilha_op.pop()
 
     while pilha_op:
-        op = pilha_op.pop()
-        num2 = pilha_num.pop()
-        num1 = pilha_num.pop()
-        if op == '+':
-            pilha_num.append(num1 + num2)
-        elif op == '-':
-            pilha_num.append(num1 - num2)
-        elif op == '*':
-            pilha_num.append(num1 * num2)
-        elif op == '/':
-            pilha_num.append(num1 / num2)
+        aplicar_operador(pilha_op.pop(), pilha_num)
     return pilha_num[0]
 
 
+def aplicar_operador(op, pilha_num):
+    """Desempilha dois números, aplica op e empilha o resultado."""
+    num2 = pilha_num.pop()
+    num1 = pilha_num.pop()
+    if op == '+':
+        pilha_num.append(num1 + num2)
+    elif op == '-':
+        pilha_num.append(num1 - num2)
+    elif op == '*':
+        pilha_num.append(num1 * num2)
+    elif op == '/':
+        pilha_num.append(num1 / num2)
+
+
 def digito(token):
+    """Diz se o token é um número, inteiro ou decimal (não só um dígito)."""
     try:
         float(token)
         return True
@@ -93,6 +78,7 @@ def digito(token):
 
 
 def analisador_semantico(expressao):
+    """Confere parênteses e operadores na expressão crua, antes do léxico."""
     operadores = set(['+', '-', '*', '/'])
     count_parenteses = 0
     for i in range(len(expressao)):
@@ -102,14 +88,10 @@ def analisador_semantico(expressao):
             # Exceto caso a expressao comece por um parenteses.
             if i > 1 and not expressao[i - 1] in operadores:
                 raise Exception('Erro de semântica')
-            # verificamos se apos a abertura do parenteses tem eh diferente de
-            # um numero e diferente de outro parenteses
             elif not digito(expressao[i + 1]) and expressao[i + 1] != '(':
                 raise Exception('Erro de semântica')
         elif expressao[i] == ')':
             count_parenteses -= 1
-            # Antes do parenteses fechado tem que ser um digito
-            # ou outro parenteses fechado
             if i > 1 and not digito(expressao[i - 1]) and expressao[
                     i - 1] != ')':
                 raise Exception('Erro de semântica')
@@ -117,13 +99,11 @@ def analisador_semantico(expressao):
                 if not expressao[i + 1] in operadores and expressao[
                         i + 1] != ')':
                     raise Exception('Erro de semântica')
-        # Verificamos se existe sequencia de 2 operadores
         elif expressao[i] in operadores:
             if i > 1 and (expressao[i - 1] in operadores or expressao[
                     i + 1] in operadores):
                 raise Exception(
                     '2 ou mais operadores consecutivos na expressão.')
-    # Se existir parentes nao fechados, gera erro
     if count_parenteses != 0:
         raise Exception('Erro na abertura ou fechamento dos parênteses')
     return
@@ -145,8 +125,7 @@ while True:
 try:
     expressoes = linha.split(';')
     expressoes_tratadas = list(filter(bool, expressoes))
-    # raise Exception(expressoes_tratadas)
-    for indice, exp in enumerate(expressoes_tratadas):
+    for exp in expressoes_tratadas:
         indice_exp += 1
         analisador_semantico(exp)
         exp_tokens = analisador_lexico(exp)
